@@ -6,15 +6,15 @@ import { useEffect, useState } from "react";
 export const ModalProvider = () => {
     const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() =>{
+    useEffect(() => {
         setIsMounted(true);
-    },[]);
+    }, []);
 
-    if(!isMounted){
+    if (!isMounted) {
         return null;
     }
 
-    return(
+    return (
         <>
             <StoreModal />
         </>

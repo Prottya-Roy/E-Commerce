@@ -25,7 +25,6 @@ export const Modal: React.FC<ModalProps> = ({
     };
 
     useEffect(() => {
-        // Ensuring that the modal state changes are handled on client-side
         if (!isOpen) {
             onClose();
         }
