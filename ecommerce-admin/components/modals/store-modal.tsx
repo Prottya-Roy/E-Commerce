@@ -35,7 +35,8 @@ export const StoreModal = () => {
             
             const response = await axios.post('/api/stores', values);
 
-            toast.success("Store Created Successfully");
+            window.location.assign(`/${response.data.id}`);
+
             console.log(response.data);
         } catch (error) {
             console.log(error);
@@ -63,7 +64,9 @@ export const StoreModal = () => {
                                     <FormLabel>Name</FormLabel>
                                     <div>
                                         <FormControl>
-                                            <input disabled={loading} placeholder="E-Commerce" {...field} />
+                                            <input 
+                                                className="p-2"
+                                                disabled={loading} placeholder="E-Commerce" {...field} />
                                         </FormControl>
                                     </div>
                                     <FormMessage />
