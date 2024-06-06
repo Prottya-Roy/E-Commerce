@@ -32,7 +32,7 @@ export const StoreModal = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             setloading(true);
-            
+
             const response = await axios.post('/api/stores', values);
 
             window.location.assign(`/${response.data.id}`);
@@ -41,7 +41,7 @@ export const StoreModal = () => {
         } catch (error) {
             console.log(error);
             toast.error("Store Creation Unsuccessful");
-        }finally{
+        } finally {
             setloading(false);
         }
     }
@@ -64,7 +64,7 @@ export const StoreModal = () => {
                                     <FormLabel>Name</FormLabel>
                                     <div>
                                         <FormControl>
-                                            <input 
+                                            <input
                                                 className="p-2"
                                                 disabled={loading} placeholder="E-Commerce" {...field} />
                                         </FormControl>

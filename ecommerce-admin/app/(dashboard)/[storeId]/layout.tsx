@@ -7,13 +7,13 @@ import Navbar from "@/components/navbar";
 export default async function DashboardLayout({
     children,
     params
-} : {
-    children : React.ReactNode;
-    params: {storeId: string}
+}: {
+    children: React.ReactNode;
+    params: { storeId: string }
 }) {
     const { userId } = auth();
 
-    if(!userId){
+    if (!userId) {
         redirect('/sign-in');
     }
 
@@ -24,11 +24,11 @@ export default async function DashboardLayout({
         }
     });
 
-    if(!store){
+    if (!store) {
         redirect('/');
     }
 
-    return(
+    return (
         <>
             <Navbar />
             {children}
