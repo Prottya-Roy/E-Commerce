@@ -6,14 +6,14 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { CellAction } from "./cell-action"
 
 
-export type SizeColumn = {
+export type ColorColumn = {
     id: string
     name: string
     value: string
     createdAt: string
 }
 
-export const columns: ColumnDef<SizeColumn>[] = [
+export const columns: ColumnDef<ColorColumn>[] = [
     {
         accessorKey: "name",
         header: ({ column }) => {
