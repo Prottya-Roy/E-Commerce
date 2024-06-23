@@ -56,11 +56,6 @@ export async function GET(
     { params }: { params: { storeId: string } }
 ) {
     try {
-        const { userId } = auth();
-        if (!userId) {
-            return new NextResponse("Unauthenticated", { status: 403 });
-        }
-
         if (!params.storeId) {
             return new NextResponse("Store Id is required", { status: 400 });
         }

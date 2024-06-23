@@ -9,7 +9,15 @@ export async function POST(
     try {
         const { userId } = auth();
         const body = await req.json();
-        const { name, imageUrl } = body;
+        const { name,
+            price,
+            categoryId,
+            sizeId,
+            colorId,
+            images,
+            isFeatured,
+            isArchived
+        } = body;
         if (!userId) {
             return new NextResponse("Unauthenticated", { status: 403 });
         }
@@ -17,9 +25,24 @@ export async function POST(
         if (!name) {
             return new NextResponse("name is required", { status: 400 });
         }
+        if (!images || !images.length) {
+            return new NextResponse("images are required", { status: 400 });
+        }
 
-        if (!imageUrl) {
-            return new NextResponse("Image URL is required", { status: 400 });
+        if (!price) {
+            return new NextResponse("price is required", { status: 400 });
+        }
+
+        if (!categoryId) {
+            return new NextResponse("category is required", { status: 400 });
+        }
+
+        if (!sizeId) {
+            return new NextResponse("size is required", { status: 400 });
+        }
+
+        if (!colorId) {
+            return new NextResponse("color is required", { status: 400 });
         }
 
         if (!params.storeId) {
@@ -39,14 +62,26 @@ export async function POST(
         const product = await prismadb.product.create({
             data: {
                 name,
-                imageUrl,
-                storeId: params.storeId
+                price,
+                colorId,
+                sizeId,
+                categoryId,
+                isFeatured,
+                isArchived,
+                storeId: params.storeId,
+                images: {
+                    createMany: {
+                        data: [
+                            ...images.map((image: { url: string }) => image)
+                        ]
+                    }
+                }
             }
         });
 
         return NextResponse.json(product);
     } catch (error) {
-        console.log('[BILLBOARDS_POST]', error);
+        console.log('[PRODUCTS_POST]', error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 };
@@ -56,11 +91,6 @@ export async function GET(
     { params }: { params: { storeId: string } }
 ) {
     try {
-        const { userId } = auth();
-        if (!userId) {
-            return new NextResponse("Unauthenticated", { status: 403 });
-        }
-
         if (!params.storeId) {
             return new NextResponse("Store Id is required", { status: 400 });
         }
@@ -73,7 +103,7 @@ export async function GET(
 
         return NextResponse.json(products);
     } catch (error) {
-        console.log('[BILLBOARDS_GET]', error);
+        console.log('[PRODUCTS_GET]', error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 };
