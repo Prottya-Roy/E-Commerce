@@ -4,7 +4,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
-import { Product } from "@prisma/client";
+import { Image, Product } from "@prisma/client";
 import { Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -19,16 +19,30 @@ import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 interface ProductFormProps {
-    initialData: Product | null
+    initialData: Product & {
+        images: Image[]
+    } | null
 }
 
 const formSchema = z.object({
     name: z.string().min(2, {
-        message: "Label must be at least 2 characters.",
+        message: "name must be at least 2 characters.",
     }),
-    imageUrl: z.string().min(2, {
-        message: "image Url must be at least 2 characters.",
+    images: z.object({ url: z.string() }).array(),
+    price: z.string().min(1, {
+        message: "price must be at least 1 character.",
     }),
+    categoryId: z.string().min(1, {
+        message: "categoryId must be at least 1 character.",
+    }),
+    sizeId: z.string().min(1, {
+        message: "sizeId must be at least 1 character.",
+    }),
+    colorId: z.string().min(1, {
+        message: "colorId must be at least 1 character.",
+    }),
+    isFeatured: z.boolean().default(false).optional(),
+    isArchived: z.boolean().default(false).optional(),
 });
 
 type ProductFormValues = z.infer<typeof formSchema>;
@@ -52,9 +66,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 
     const form = useForm<ProductFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: initialData || {
+        defaultValues: initialData ? {
+            ...initialData,
+            price: initialData?.price.toString()
+        } : {
             name: '',
-            imageUrl: '',
+            images: [],
+            price: '0',
+            categoryId: '',
+            sizeId: '',
+            colorId: '',
+            isFeatured: false,
+            isArchived: false
         }
     });
 
@@ -84,7 +107,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
             router.push(`/${params.storeId}/products`);
             toast.success("Product Deleted Successfully !!!");
         } catch (error) {
-            toast.error("Make sure you removed all all categories using this product first...")
+            toast.error("Make sure you removed all categories using this product first...");
         } finally {
             setLoading(false);
             setOpen(false);
@@ -120,16 +143,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
                     <FormField
                         control={form.control}
-                        name="imageUrl"
+                        name="images"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Label</FormLabel>
+                                <FormLabel>Images</FormLabel>
                                 <FormControl>
                                     <ImageUpload
-                                        value={field.value ? [field.value] : []}
+                                        value={field.value.map((image) => image.url)}
                                         disabled={loading}
-                                        onChange={(url) => field.onChange(url)}
-                                        onRemove={() => field.onChange("")}
+                                        onChange={(url) => field.onChange([...field.value, { url }])}
+                                        onRemove={(url) => field.onChange(field.value.filter((current) => current.url !== url))}
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -145,6 +168,58 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                                     <FormLabel>Label</FormLabel>
                                     <FormControl>
                                         <Input disabled={loading} placeholder="Product Label" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="price"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Price</FormLabel>
+                                    <FormControl>
+                                        <Input disabled={loading} placeholder="Price" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="categoryId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Category ID</FormLabel>
+                                    <FormControl>
+                                        <Input disabled={loading} placeholder="Category ID" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="sizeId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Size ID</FormLabel>
+                                    <FormControl>
+                                        <Input disabled={loading} placeholder="Size ID" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="colorId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Color ID</FormLabel>
+                                    <FormControl>
+                                        <Input disabled={loading} placeholder="Color ID" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

@@ -9,6 +9,12 @@ import { CellAction } from "./cell-action"
 export type ProductColumn = {
     id: string
     name: string
+    price: string
+    size: string
+    category: string
+    isFeatured: boolean
+    isArchived: boolean
+    color: string
     createdAt: string
 }
 
@@ -21,11 +27,48 @@ export const columns: ColumnDef<ProductColumn>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Label
+                    Name
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
+    },
+    {
+        accessorKey: "isArchived",
+        header: "Archived",
+    },
+    {
+        accessorKey: "isFeatured",
+        header: "Featured",
+    },
+    {
+        accessorKey: "createdAt",
+        header: "Date",
+    },
+    {
+        accessorKey: "price",
+        header: "Price",
+    },
+    {
+        accessorKey: "category",
+        header: "Category",
+    },
+    {
+        accessorKey: "size",
+        header: "Size",
+    },
+    {
+        accessorKey: "color",
+        header: "Color",
+        cell: ({row}) => {
+            <div className="flex items-center gap-x-2">
+                {row.original.color}
+                <div 
+                    className="h-6 w-6 rounded-full border"
+                    style={{backgroundColor:  row.original.color}}
+                />
+            </div>
+        }
     },
     {
         accessorKey: "createdAt",
