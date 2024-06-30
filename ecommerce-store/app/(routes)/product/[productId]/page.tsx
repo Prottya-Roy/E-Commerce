@@ -15,9 +15,12 @@ const ProductPage: React.FC<ProductPageProps> = async ({
     params
 }) => {
     const product = await getProduct(params.productId);
-    const suggestedProducts = await getProducts({
+    const sameCategoryProducts = await getProducts({
         categoryId: product?.category?.id
     });
+    const suggestedProducts = sameCategoryProducts.filter(
+        (sameCategoryProduct) => sameCategoryProduct.id !== params.productId
+    );
     return (
         <div className="bg-white">
             <Container>
